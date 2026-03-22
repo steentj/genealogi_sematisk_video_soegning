@@ -97,6 +97,40 @@ Scriptet er sikkert at køre flere gange – eksisterende rækker opdateres (UPS
 http://localhost/genealogi/semantisk-video-søgning/search.php
 ```
 
+### 5. Lokal test på macOS (hurtig guide)
+
+Hvis du vil teste uden MAMP/XAMPP, kan du bruge PHP's indbyggede webserver direkte fra projektmappen:
+
+```bash
+cd /Users/steen/Projects/Genealogi/semantisk-video-søgning
+php -S localhost:8080
+```
+
+Åbn derefter i browseren:
+
+```
+http://localhost:8080/search.php
+```
+
+Hvis du vil køre import via browser i samme setup:
+
+```
+http://localhost:8080/import.php
+```
+
+**Vigtigt om DB_HOST vs localhost:8080**
+
+- `localhost:8080` i browseren er webserveren (PHP-siden)
+- `DB_HOST` i `config.php` er databaseserveren og er typisk `localhost` (uden `:8080`)
+- Hvis din MySQL ikke kører på standardporten 3306 (f.eks. MAMP kan bruge 8889), skal den port angives i databaseforbindelsen
+
+Ved MAMP er det normalt:
+
+- `DB_HOST = localhost`
+- `DB_USER = root`
+- `DB_PASS = root`
+- MySQL-port = `8889` (afhænger af din MAMP-indstilling)
+
 ---
 
 ## Brug af søgesiden
