@@ -135,7 +135,6 @@ function getEmbedding(string $text): ?array
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
-    curl_close($ch);
 
     if ($curlError) {
         output("curl-fejl: $curlError", true);

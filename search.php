@@ -72,7 +72,6 @@ function getEmbedding(string $text): ?array
     $response  = curl_exec($ch);
     $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
-    curl_close($ch);
 
     if ($curlError || $httpCode !== 200) {
         return null;
@@ -505,9 +504,9 @@ if ($query !== '') {
 
                     $scorePercent = round($result['score'] * 100, 1);
 
-                    // Introtext bruges i popup – JSON-encode for sikker brug i JS
-                    $introJson      = json_encode($result['introtext'], JSON_HEX_QUOT | JSON_HEX_APOS);
-                    $videoTitleJson = json_encode($result['video_title'], JSON_HEX_QUOT | JSON_HEX_APOS);
+                    // Introtext og titel gemmes som data-attributter for sikker HTML-indlejring
+                    $dataTitle = htmlspecialchars($result['video_title'], ENT_QUOTES);
+                    $dataIntro = htmlspecialchars($result['introtext'], ENT_QUOTES);
                 ?>
                 <tr>
                     <!-- Rækkens rangering -->
@@ -522,8 +521,10 @@ if ($query !== '') {
                     <!-- Id: artikel-id på video-artiklen. Hover/klik viser introtext popup -->
                     <td class="id-cell">
                         <button class="id-link"
-                                onmouseover="showPopup(<?= $videoTitleJson ?>, <?= $introJson ?>)"
-                                onclick="showPopup(<?= $videoTitleJson ?>, <?= $introJson ?>)"
+                                data-title="<?= $dataTitle ?>"
+                                data-intro="<?= $dataIntro ?>"
+                                onmouseover="showPopupFromElement(this)"
+                                onclick="showPopupFromElement(this)"
                                 title="Klik eller hold musen over for at se beskrivelse">
                             <?= htmlspecialchars($articleId) ?>
                         </button>
@@ -536,8 +537,10 @@ if ($query !== '') {
                     <td class="id-cell">
                         <?php if ($linkerId !== null): ?>
                             <button class="id-link"
-                                    onmouseover="showPopup(<?= $videoTitleJson ?>, <?= $introJson ?>)"
-                                    onclick="showPopup(<?= $videoTitleJson ?>, <?= $introJson ?>)"
+                                    data-title="<?= $dataTitle ?>"
+                                    data-intro="<?= $dataIntro ?>"
+                                    onmouseover="showPopupFromElement(this)"
+                                    onclick="showPopupFromElement(this)"
                                     title="Klik eller hold musen over for at se beskrivelse">
                                 <?= htmlspecialchars($linkerId) ?>
                             </button>
@@ -584,13 +587,13 @@ if ($query !== '') {
 /**
  * Vis popup med videobeskrivelse.
  * Kaldes ved hover og klik på Id-felter i resultattabellen.
+ * Titel og introtext læses fra data-attributter på knappen.
  *
- * @param {string} title    Videoens titel (vises som popup-overskrift)
- * @param {string} introtext  Beskrivelse uden HTML (vises som brødtekst)
+ * @param {HTMLElement} el  Den knap der blev klikket/hovered
  */
-function showPopup(title, introtext) {
-    document.getElementById('popup-title').textContent = title;
-    document.getElementById('popup-text').textContent  = introtext;
+function showPopupFromElement(el) {
+    document.getElementById('popup-title').textContent = el.dataset.title;
+    document.getElementById('popup-text').textContent  = el.dataset.intro;
     document.getElementById('popup-overlay').classList.add('visible');
 }
 
