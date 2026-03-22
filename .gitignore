@@ -1,0 +1,10 @@
+# Konfigurationsfil med API-nøgle og database-password – må IKKE committes
+config.php
+
+# Prompt-/notitsfiler
+start_prompt.txt
+start_prompt_fortsat.txt
+
+# Lokale og midlertidige filer
+*.log
+.DS_Store
